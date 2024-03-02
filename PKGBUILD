@@ -1,5 +1,5 @@
 pkgname=crates_rofio
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1 
 pkgdesc="Search for Rust crates on crates.io and open them in the default web browser"
 arch=('x86_64')
