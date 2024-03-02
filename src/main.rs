@@ -28,7 +28,7 @@ fn main() {
 
     // Read cache data
     match read_all_from_cache() {
-        Ok(cached_crates) => handle_user_selection(&rt, &cached_crates),
+        Ok(cached_crates) => handle_user_selection_recursive(&rt, cached_crates),
         Err(e) => {
             eprintln!("Failed to read cache: {}", e);
         }
@@ -42,19 +42,24 @@ fn handle_user_selection(rt: &Runtime, cached_crates: &[Crate]) {
         cached_crates.len()
     );
 
+    let mut current_crates = cached_crates.to_vec();
+
     // Continuously displays the Rofi interface for user interaction until a breaking condition is
     // met
     loop {
         match display_with_rofi(cached_crates.to_vec()) {
-            Ok(selection) if selection == "Search Online" => {
-                // Triggers an online search if the user selects the option to search online
-                if !prompt_and_fetch(rt) {
-                    break;
+            Ok(selection) if selection == "Search Online" => match prompt_and_fetch(rt) {
+                Ok(fetched_crates) if !fetched_crates.is_empty() => {
+                    current_crates = fetched_crates;
                 }
-            }
+                Ok(_) => break,
+                Err(e) => {
+                    report_error("Error fetching crates", &e.to_string());
+                }
+            },
             Ok(selection) => {
                 // Processes the user's selection of a crate
-                process_selection(rt, &selection, cached_crates);
+                process_selection(rt, &selection, &current_crates);
                 break;
             }
             Err(e) => {
@@ -62,6 +67,33 @@ fn handle_user_selection(rt: &Runtime, cached_crates: &[Crate]) {
                 report_error("Error displaying crates with Rofi", &e.to_string());
                 break;
             }
+        }
+    }
+}
+
+fn handle_user_selection_recursive(rt: &Runtime, current_crates: Vec<Crate>) {
+    debug!("Displaying {} crates to the user", current_crates.len());
+
+    match display_with_rofi(current_crates.clone()) {
+        Ok(selection) if selection == "Search Online" => {
+            // When the user selects "Search Online", fetch new crates and display them
+            match prompt_and_fetch(rt) {
+                Ok(fetched_crates) if !fetched_crates.is_empty() => {
+                    handle_user_selection_recursive(rt, fetched_crates);
+                }
+                Ok(_) => {
+                    handle_user_selection_recursive(rt, current_crates);
+                }
+                Err(e) => {
+                    report_error("Error fetching crates", &e.to_string());
+                    return;
+                }
+            }
+        }
+        Ok(selection) => process_selection(rt, &selection, &current_crates),
+        Err(e) => {
+            report_error("Error displaying crates with Rofi", &e.to_string());
+            return;
         }
     }
 }

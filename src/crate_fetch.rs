@@ -1,6 +1,5 @@
 use crate::cache::cache_results;
 use crate::notification::send_notification_error;
-use crate::rofi::display_with_rofi;
 use crate::types::{Crate, Result};
 use serde::Deserialize;
 
@@ -27,20 +26,15 @@ pub async fn fetch_crates_data(query: &str) -> Result<Vec<Crate>> {
     Ok(res.crates)
 }
 
-pub async fn fetch_and_display_results(query: &str) -> Result<()> {
-    match fetch_crates_data(query).await {
-        Ok(crates) => {
-            println!("Updating cache with new results.");
-            // Update cache with new results.
-            if let Err(e) = cache_results(query, &crates) {
-                send_notification_error("Cache Error", "Could not update cache with results")?;
-                eprintln!("Failed to cache results: {}", e);
-            }
+pub async fn fetch_and_display_results(query: &str) -> Result<Vec<Crate>> {
+    let fetched_crates = fetch_crates_data(query).await?;
 
-            // Display newly fetched crates with an option to search online again.
-            display_with_rofi(crates)?;
-            Ok(())
-        }
-        Err(e) => Err(e.into()),
+    println!("Updating cache with new results.");
+    // Update cache with new results.
+    if let Err(e) = cache_results(query, &fetched_crates) {
+        send_notification_error("Cache Error", "Could not update cache with results")?;
+        eprintln!("Failed to cache results: {}", e);
     }
+
+    Ok(fetched_crates)
 }

@@ -82,20 +82,22 @@ pub fn handle_crate_selection(crate_name: &str, cached_crates: &[Crate]) {
     }
 }
 
-pub fn prompt_and_fetch(rt: &Runtime) -> bool {
+pub fn prompt_and_fetch(rt: &Runtime) -> Result<Vec<Crate>> {
     match get_user_input() {
         Ok(Some(new_query)) if !new_query.is_empty() => {
             println!("Fetching results for: {}", new_query);
-            rt.block_on(fetch_and_display(new_query));
-            true
+            match rt.block_on(fetch_and_display_results(&new_query)) {
+                Ok(crates) => Ok(crates),
+                Err(e) => Err(e),
+            }
         }
         Ok(Some(_)) | Ok(None) => {
             println!("No valid query provided. Exiting.");
-            false
+            Ok(vec![])
         }
         Err(e) => {
             eprintln!("Failed to get new query: {}", e);
-            false
+            Err(e)
         }
     }
 }
@@ -107,6 +109,7 @@ pub fn open_url(url: &str) {
     }
 }
 
+#[allow(dead_code)]
 pub async fn fetch_and_display(new_query: String) {
     println!("Fetching results for: {}", new_query);
     match fetch_and_display_results(&new_query).await {
