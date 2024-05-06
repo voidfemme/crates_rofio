@@ -1,2 +1,7 @@
 /target
 /pkg
+/archive/
+*.tar.gz
+/target/
+**/*.pkg.tar.zst
+.DS_Store
