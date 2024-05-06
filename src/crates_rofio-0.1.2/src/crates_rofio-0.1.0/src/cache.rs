@@ -1,5 +1,3 @@
-// This file by voidfemme is released under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
-// https://creativecommons.org/publicdomain/zero/1.0
 use crate::notification::{send_notification_error, send_notification_normal};
 use crate::types::{Cache, CacheEntry, Crate};
 use std::fs;

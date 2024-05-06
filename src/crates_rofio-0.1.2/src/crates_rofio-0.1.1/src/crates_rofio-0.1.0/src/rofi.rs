@@ -1,5 +1,3 @@
-// This file by voidfemme is released under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
-// https://creativecommons.org/publicdomain/zero/1.0
 use crate::crate_fetch::fetch_and_display_results;
 use crate::types::{Crate, Result};
 
@@ -84,22 +82,20 @@ pub fn handle_crate_selection(crate_name: &str, cached_crates: &[Crate]) {
     }
 }
 
-pub fn prompt_and_fetch(rt: &Runtime) -> Result<Vec<Crate>> {
+pub fn prompt_and_fetch(rt: &Runtime) -> bool {
     match get_user_input() {
         Ok(Some(new_query)) if !new_query.is_empty() => {
             println!("Fetching results for: {}", new_query);
-            match rt.block_on(fetch_and_display_results(&new_query)) {
-                Ok(crates) => Ok(crates),
-                Err(e) => Err(e),
-            }
+            rt.block_on(fetch_and_display(new_query));
+            true
         }
         Ok(Some(_)) | Ok(None) => {
             println!("No valid query provided. Exiting.");
-            Ok(vec![])
+            false
         }
         Err(e) => {
             eprintln!("Failed to get new query: {}", e);
-            Err(e)
+            false
         }
     }
 }
@@ -111,7 +107,6 @@ pub fn open_url(url: &str) {
     }
 }
 
-#[allow(dead_code)]
 pub async fn fetch_and_display(new_query: String) {
     println!("Fetching results for: {}", new_query);
     match fetch_and_display_results(&new_query).await {

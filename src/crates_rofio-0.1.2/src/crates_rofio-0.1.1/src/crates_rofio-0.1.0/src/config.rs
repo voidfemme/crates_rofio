@@ -1,5 +1,3 @@
-// This file by voidfemme is released under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
-// https://creativecommons.org/publicdomain/zero/1.0
 use crate::cache::CACHE_FILE_PATH;
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
@@ -7,7 +5,6 @@ use std::fs;
 use std::path::PathBuf;
 use toml;
 
-#[allow(dead_code)]
 pub const CONFIG_FILE_PATH: &str = "/home/rsp/.config/crates_rofio/config.toml";
 
 #[derive(Serialize, Deserialize)]
@@ -23,7 +20,6 @@ impl Default for Config {
     }
 }
 
-#[allow(dead_code)]
 fn load_config() -> Config {
     let config_path = get_config_path().unwrap_or_else(|| PathBuf::from(CONFIG_FILE_PATH));
     if config_path.exists() {
@@ -34,7 +30,6 @@ fn load_config() -> Config {
     }
 }
 
-#[allow(dead_code)]
 fn get_config_path() -> Option<PathBuf> {
     if let Some(proj_dirs) = ProjectDirs::from("com", "voidfemme", "crates_rofio") {
         let config_dir = proj_dirs.config_dir();

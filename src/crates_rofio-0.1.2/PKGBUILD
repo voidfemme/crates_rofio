@@ -5,7 +5,7 @@ pkgdesc="Search for Rust crates on crates.io and open them in the default web br
 arch=('x86_64')
 license=('GPL')
 source=("https://github.com/voidfemme/crates_rofio/archive/refs/tags/$pkgver.tar.gz")
-sha256sums=('15de02dbde7cebf4bfd096abe6b8d268b9ec1530ca4214f0d3dd4fb525b87738')
+sha256sums=('c32ed5c55bc9403466dbed5d1b7c0721a11765f0352eeb5a4b7722629a35be12')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"

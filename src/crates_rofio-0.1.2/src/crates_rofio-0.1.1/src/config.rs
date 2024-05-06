@@ -1,5 +1,3 @@
-// This file by voidfemme is released under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
-// https://creativecommons.org/publicdomain/zero/1.0
 use crate::cache::CACHE_FILE_PATH;
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};

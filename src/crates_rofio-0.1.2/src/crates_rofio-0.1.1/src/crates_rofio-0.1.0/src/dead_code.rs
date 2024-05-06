@@ -1,5 +1,3 @@
-// This file by voidfemme is released under CC0 1.0 Universal (CC0 1.0) Public Domain Dedication.
-// https://creativecommons.org/publicdomain/zero/1.0
 fn read_from_cache(query: &str) -> Option<Vec<Crate>> {
     let cache_file_path = "/home/rsp/scripts/rust/rust_man/resources/data/cache.json"; // Use a single cache file
     if Path::new(&cache_file_path).exists() {
