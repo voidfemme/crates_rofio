@@ -9,6 +9,18 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 pub const CACHE_FILE_PATH: &str = "/home/rsp/.config/crates_rofio/cache.json";
 
+pub fn clear_cache() -> io::Result<()> {
+    let path = Path::new(CACHE_FILE_PATH);
+    if path.exists() {
+        fs::remove_file(path)?;
+        let _ =
+            send_notification_normal("Cache Cleared", "The cache has been successfully cleared.");
+    } else {
+        let _ = send_notification_error("Cache Clear Error", "Cache file not found.");
+    }
+    Ok(())
+}
+
 pub fn cache_results(query: &str, crates: &Vec<Crate>) -> Result<(), io::Error> {
     let _ = send_notification_normal(
         "Caching results",

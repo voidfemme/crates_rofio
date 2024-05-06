@@ -34,7 +34,7 @@ pub fn get_user_input() -> Result<Option<String>> {
 }
 
 pub fn display_with_rofi(results: Vec<Crate>) -> io::Result<String> {
-    let mut formatted_results = "Search Online".to_string();
+    let mut formatted_results = "Search Online\nClear Cache".to_string();
     for c in results.iter() {
         let entry = format!("\n{} - {}", c.name, c.max_version);
         formatted_results.push_str(&entry);

@@ -57,6 +57,12 @@ fn handle_user_selection(rt: &Runtime, current_crates: Vec<Crate>) {
                 }
             }
         }
+        Ok(selection) if selection == "Clear Cache" => {
+            // Handle clearing the cache
+            if let Err(e) = cache::clear_cache() {
+                report_error("Failed to clear cache", &e.to_string());
+            }
+        }
         Ok(selection) => process_selection(rt, &selection, &current_crates),
         Err(e) => {
             report_error("Error displaying crates with Rofi", &e.to_string());
